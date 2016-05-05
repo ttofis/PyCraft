@@ -17,12 +17,22 @@ Sys is used to recognise the version of python, so anyone can use it with Python
 
 if (sys.version_info >= (3, 0)):
 	import urllib.request
+	def urlspecial(link):
+		return urllib.request.urlopen(link).read()
 	def urlopen(link):
 		return urllib.request.urlopen(link).read().decode("utf-8")
+	def urlsave(link, filename):
+		urllib.request.urlretrieve(link, filename)
+		return "Saved " + link + " as " + filename
 else:
 	import urllib2
+	def urlspecial(link):
+		return urllib2.urlopen(link).read()
 	def urlopen(link):
 		return urllib2.urlopen(link).read()
+	def urlsave(link, filename):
+		urllib2.urlretrieve(link, filename)
+		return "Saved " + link + " as " + filename
 
 
 """
@@ -85,6 +95,17 @@ def getProfile(username):
 	"""
 	return urlopen("https://sessionserver.mojang.com/session/minecraft/profile/" + getUUID(username))
 
+def getSpecificProfile(username, info):
+	"""
+	It returns the desired information for the desired username
+	"""
+	if (info == "id"):
+		return json.loads(getProfile(username))["id"]
+	elif (info == "name"):
+		return json.loads(getProfile(username))["name"]
+	else:
+		raise TypeError("That Information doesn't exist!")
+
 def getProfileValue(username):
 	"""
 	It returns a JSON tree of all information about the given UUID's profile value. That includes profileId, profileName, skin and cape (if existant)
@@ -92,3 +113,35 @@ def getProfileValue(username):
 	Or you can use the next functions which give more precise information
 	"""
 	return base64.b64decode(json.loads(getProfile(username))["properties"][0]["value"]).decode("utf-8")
+
+def getSpecificProfileValue(username, info):
+	"""
+	It returns the desired information for the desired username
+	"""
+	if (info == "timestamp"):
+		return json.loads(getProfileValue(username))["timestamp"]
+	elif (info == "profileId"):
+		return json.loads(getProfileValue(username))["profileId"]
+	elif (info == "profileName"):
+		return json.loads(getProfileValue(username))["profileName"]
+	elif (info == "SKIN"):
+		return json.loads(getProfileValue(username))["textures"]["SKIN"]["url"]
+	elif (info == "CAPE"):
+		try:
+			return json.loads(getProfileValue(username))["textures"]["CAPE"]["url"]
+		except:
+			raise TypeError("User doesn't have a cape!")
+
+def saveSkin(username, filename):
+	urlsave(getSpecificProfileValue(username, "SKIN"), filename)
+	return "Saved " + username + "'s skin as " + filename
+
+def saveCape(username, filename):
+	urlsave(getSpecificProfileValue(username, "CAPE"), filename)
+	return "Saved " + username + "'s cape as " + filename
+
+def loadSkin(username):
+	return urlspecial(getSpecificProfileValue(username, "SKIN"))
+
+def loadCape(username):
+	return urlspecial(getSpecificProfileValue(username, "CAPE"))
