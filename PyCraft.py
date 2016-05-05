@@ -4,6 +4,7 @@ Designed for easy access to the wide variety of Minecraft APIs.
 You are allowed to use this in any of your projects provided you give credit.
 See something you think you can contribute and make it better? Fork now and make a pull request!
 Made by @ELChris414
+Version 1.0 (Release)
 """
 from __future__ import print_function
 
