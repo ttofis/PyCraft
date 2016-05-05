@@ -9,6 +9,7 @@ from __future__ import print_function
 
 import json
 import sys
+import base64
 
 """
 Sys is used to recognise the version of python, so anyone can use it with Python 2 or 3.
@@ -78,9 +79,16 @@ def getSpecificMojangServerStatus(server):
 
 def getProfile(username):
 	"""
-	It returns a JSON tree of all information about the given UUID's profile, skin and cape.
+	It returns a JSON tree of all information about the given UUID's profile.
 	You might want to use something like json.loads(pycraft.getProfile(*username that you want*))[*information that you want*]
 	Or you can use the next functions which give more precise information
 	"""
 	return urlopen("https://sessionserver.mojang.com/session/minecraft/profile/" + getUUID(username))
 
+def getProfileValue(username):
+	"""
+	It returns a JSON tree of all information about the given UUID's profile value. That includes profileId, profileName, skin and cape (if existant)
+	You might want to use something like json.loads(pycraft.getProfileValue(*username that you want*))[*information that you want*]
+	Or you can use the next functions which give more precise information
+	"""
+	return base64.b64decode(json.loads(getProfile(username))["properties"][0]["value"]).decode("utf-8")
