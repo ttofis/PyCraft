@@ -4,7 +4,7 @@ Designed for easy access to the wide variety of Minecraft APIs.
 You are allowed to use this in any of your projects provided you give credit.
 See something you think you can contribute and make it better? Fork now and make a pull request!
 Made by @ELChris414
-Version 1.0 (Release)
+Version 1.1 (Release)
 """
 from __future__ import print_function
 
@@ -35,10 +35,6 @@ else:
 		urllib2.urlretrieve(link, filename)
 		return "Saved " + link + " as " + filename
 
-
-"""
-In this case, we do not need to use a class as already we are using pycraft. and the function that we want. No information needed.
-"""
 def getUUID(username):
 	"""
 	It returns the UUID value of the specified username as a string
@@ -63,6 +59,15 @@ def getMojangServerStatus():
 def getSpecificMojangServerStatus(server):
 	"""
 	It is given a string with the server name and it outputs the status of that server
+	Possible server:
+		minecraft.net
+		session.minecraft.net
+		account.mojang.com
+		auth.mojang.com
+		sessionserver.mojang.com
+		api.mojang.com
+		textures.minecraft.net
+		mojang.com
 	"""
 	if (server == "minecraft.net"):
 		serverID = 0
@@ -90,7 +95,7 @@ def getSpecificMojangServerStatus(server):
 
 def getProfile(username):
 	"""
-	It returns a JSON tree of all information about the given UUID's profile.
+	It returns a JSON tree of all information about the given username's profile.
 	You might want to use something like json.loads(pycraft.getProfile(*username that you want*))[*information that you want*]
 	Or you can use the next functions which give more precise information
 	"""
@@ -99,6 +104,9 @@ def getProfile(username):
 def getSpecificProfile(username, info):
 	"""
 	It returns the desired information for the desired username
+	Possible information:
+		id
+		name
 	"""
 	if (info == "id"):
 		return json.loads(getProfile(username))["id"]
@@ -109,7 +117,7 @@ def getSpecificProfile(username, info):
 
 def getProfileValue(username):
 	"""
-	It returns a JSON tree of all information about the given UUID's profile value. That includes profileId, profileName, skin and cape (if existant)
+	It returns a JSON tree of all information about the given username's profile value. That includes profileId, profileName, skin and cape (if existant)
 	You might want to use something like json.loads(pycraft.getProfileValue(*username that you want*))[*information that you want*]
 	Or you can use the next functions which give more precise information
 	"""
@@ -118,6 +126,12 @@ def getProfileValue(username):
 def getSpecificProfileValue(username, info):
 	"""
 	It returns the desired information for the desired username
+	Possible information:
+		timestamp
+		profileId
+		profileName
+		SKIN
+		CAPE
 	"""
 	if (info == "timestamp"):
 		return json.loads(getProfileValue(username))["timestamp"]
@@ -134,15 +148,27 @@ def getSpecificProfileValue(username, info):
 			raise TypeError("User doesn't have a cape!")
 
 def saveSkin(username, filename):
+	"""
+	It saves the skin of the desired username to the desired filename
+	"""
 	urlsave(getSpecificProfileValue(username, "SKIN"), filename)
 	return "Saved " + username + "'s skin as " + filename
 
 def saveCape(username, filename):
+	"""
+	It saves the cape of the desired username to the desired filename
+	"""
 	urlsave(getSpecificProfileValue(username, "CAPE"), filename)
 	return "Saved " + username + "'s cape as " + filename
 
 def loadSkin(username):
+	"""
+	It returns the skin of the desired username as bytes
+	"""
 	return urlspecial(getSpecificProfileValue(username, "SKIN"))
 
 def loadCape(username):
+	"""
+	It returns the cape of the desired username as bytes
+	"""
 	return urlspecial(getSpecificProfileValue(username, "CAPE"))
